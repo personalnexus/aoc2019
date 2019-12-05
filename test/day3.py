@@ -5,7 +5,6 @@ from typing import List, Set
 class Day3(AllLinesTestBase):
 
     def process(self, lines):
-
         def getPath(line) -> Set[Point]:
             startingPoint = Point(0, 0)
             turns = split(line)
@@ -32,6 +31,11 @@ class Day3(AllLinesTestBase):
 
 
 class Point:
+    _movementsByDirection = {'R': (1, 0),
+                             'L': (-1, 0),
+                             'U': (0, 1),
+                             'D': (0, -1)}
+
     def __init__(self, x: int, y: int):
         self.X = x
         self.Y = y
@@ -42,18 +46,14 @@ class Point:
         if distance == 0:
             pointsInPath = [self]
         else:
-            if direction == 'R':
-                operation = lambda d: Point(self.X + d, self.Y)
-            elif direction == 'U':
-                operation = lambda d: Point(self.X, self.Y + d)
-            elif direction == 'D':
-                operation = lambda d: Point(self.X, self.Y - d)
-            elif direction == 'L':
-                operation = lambda d: Point(self.X - d, self.Y)
-            else:
-                raise Exception('Invalid direction {0}'.format(direction))
-            pointsInPath = [operation(d) for d in range(1, distance+1)]
+            pointsInPath = [self.moveOne(direction, d + 1) for d in range(distance)]
         return pointsInPath
+
+    def moveOne(self, direction: str, distance: int):
+        movement = Point._movementsByDirection[direction]
+        result = Point(self.X + movement[0] * distance,
+                       self.Y + movement[1] * distance)
+        return result
 
     @property
     def distanceFromOrigin(self):
