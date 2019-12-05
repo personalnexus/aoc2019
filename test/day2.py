@@ -1,9 +1,9 @@
-from test import split, join, TestBase
+from test import split, join, LineByLineTestBase
 
 
-class Day2(TestBase):
+class Day2(LineByLineTestBase):
 
-    def execute(self, line):
+    def process(self, line):
         codes = split(line, int)
         for i in range(0, len(codes), 4):
             operationCode = codes[i]

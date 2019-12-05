@@ -1,9 +1,9 @@
-from test import TestBase
+from test import LineByLineTestBase
 
 
-class Day1(TestBase):
+class Day1(LineByLineTestBase):
 
-    def execute(self, line):
+    def process(self, line):
         result = int(float(line)/3.0) - 2
         return result
 

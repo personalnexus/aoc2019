@@ -1,7 +1,9 @@
 import unittest
+from abc import ABC
+from typing import List, Iterable
 
 
-def split(items, cast):
+def split(items, cast=str):
     result = [cast(x) for x in items.split(',')]
     return result
 
@@ -12,32 +14,53 @@ def join(items):
 
 
 class TestBase(unittest.TestCase):
-    """base class for each day's task which is to be implemented by overriding execute() and testOne()"""
+    """Base class for each day's task which is to be implemented by overriding process() and testOne()"""
 
     @classmethod
     def setUpClass(cls):
-        if cls is TestBase:
+        if cls is LineByLineTestBase:
             raise unittest.SkipTest("Skip TestBase tests, it's a base class")
         super(TestBase, cls).setUpClass()
 
     def __init__(self, *args, **kwargs):
         super(TestBase, self).__init__(*args, **kwargs)
-        day = self.__class__.__name__[3:]
-        self._day = day
+        self._day = self.__class__.__name__[3:]
 
-    def check(self, line, expectedOutput):
-        actualOutput = self.execute(line)
-        self.assertEqual(expectedOutput, actualOutput)
-
-    def execute(self, line):
-        self.fail("must override execute()")
+    def processAll(self, inputs: Iterable[str]) -> Iterable[str]:
+        raise NotImplementedError("must override processAll()")
 
     def testOne(self):
-        self.fail("must override testOne()")
+        raise NotImplementedError("must override testOne()")
 
     def testAll(self):
         with open(r'..\data\day{0}in.txt'.format(self._day), 'r') as file:
             inputs = file.readlines()
-        outputs = (str(self.execute(line)) + '\n' for line in inputs)
+        outputs = self.processAll(inputs)
         with open(r'..\data\day{0}out.txt'.format(self._day), 'w') as file:
             file.writelines(outputs)
+
+
+class LineByLineTestBase(TestBase, ABC):
+    """Base class for tasks processing one line at a time with one output per input line"""
+
+    def check(self, line, expectedOutput):
+        actualOutput = self.process(line)
+        self.assertEqual(expectedOutput, actualOutput)
+
+    def processAll(self, inputs):
+        outputs = (str(self.process(line)) + '\n' for line in inputs)
+        return outputs
+
+    def process(self, line: str):
+        raise NotImplementedError("must override process()")
+
+
+class AllLinesTestBase(TestBase, ABC):
+    """Base class for tasks processing all lines at once returning a single output"""
+
+    def processAll(self, inputs):
+        output = list(str(self.process(list(inputs))))
+        return output
+
+    def process(self, lines: List[str]):
+        raise NotImplementedError("must override process()")
