@@ -1,23 +1,22 @@
 from test import split, AllLinesTestBase
-from typing import List, Set
+from typing import List, Set, Iterable
 
 
 class Day3(AllLinesTestBase):
 
     def process(self, lines):
-        def getPath(line) -> Set[Point]:
+        def getPath(line) -> Iterable[Point]:
             startingPoint = Point(0, 0)
             turns = split(line)
-            result = []
             for turn in turns:
                 pathSegment = startingPoint.move(turn)
-                result.extend(pathSegment)
-                startingPoint = result[-1]
-            return set(result)
+                for point in pathSegment:
+                    startingPoint = point
+                    yield point
 
-        path1 = getPath(lines[0])
+        path1 = set(getPath(lines[0]))
         path2 = getPath(lines[1])
-        intersections = [point for point in path2 if point.distanceFromOrigin != 0 and path1.__contains__(point)]
+        intersections = [point for point in path2 if point.distanceFromOrigin != 0 and point in path1]
         minimum = min(intersections)
         return minimum.distanceFromOrigin
 
@@ -31,29 +30,23 @@ class Day3(AllLinesTestBase):
 
 
 class Point:
-    _movementsByDirection = {'R': (1, 0),
-                             'L': (-1, 0),
-                             'U': (0, 1),
-                             'D': (0, -1)}
+    _movementsByDirection = {'R': lambda p, d: Point(p.X + d, p.Y),
+                             'L': lambda p, d: Point(p.X - d, p.Y),
+                             'U': lambda p, d: Point(p.X, p.Y + d),
+                             'D': lambda p, d: Point(p.X, p.Y - d)}
 
     def __init__(self, x: int, y: int):
         self.X = x
         self.Y = y
 
-    def move(self, turn: str) -> List:
+    def move(self, turn: str) -> Iterable:
         direction = turn[0].upper()
         distance = int(turn[1:])
         if distance == 0:
-            pointsInPath = [self]
+            yield self
         else:
-            pointsInPath = [self.moveOne(direction, d + 1) for d in range(distance)]
-        return pointsInPath
-
-    def moveOne(self, direction: str, distance: int):
-        movement = Point._movementsByDirection[direction]
-        result = Point(self.X + movement[0] * distance,
-                       self.Y + movement[1] * distance)
-        return result
+            for point in (Point._movementsByDirection[direction](self, d + 1) for d in range(distance)):
+                yield point
 
     @property
     def distanceFromOrigin(self):
