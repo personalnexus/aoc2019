@@ -7,7 +7,7 @@ class Day1(TestBase):
         result = int(float(line)/3.0) - 2
         return result
 
-    def testOne(self):
+    def test(self):
         self.check(12, 2)
         self.check(14, 2)
         self.check(1969, 654)

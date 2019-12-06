@@ -11,7 +11,7 @@ class Object:
     def getOrbiterCount(self, countedObjects: Set['Object']):
         countedObjects.add(self)
         uncountedOrbiters = [o for o in self.orbiters if o not in countedObjects]
-        countedObjects.update(self.orbiters)
+        countedObjects.update(uncountedOrbiters)
 
         directOrbits = len(uncountedOrbiters)
         indirectOrbits = sum(o.getOrbiterCount(countedObjects) for o in uncountedOrbiters)
@@ -34,7 +34,7 @@ class Day6(TestBase):
         orbitCountChecksum = sum(o.getOrbiterCount(set()) for o in objectsByName.values())
         return orbitCountChecksum
 
-    def testOne(self):
+    def test(self):
         self.assertEqual(0, self.process(['A)A']))
         self.assertEqual(1, self.process(['A)B']))
         self.assertEqual(3, self.process(['A)B',

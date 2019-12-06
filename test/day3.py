@@ -58,7 +58,7 @@ class Day3(TestBase):
                     point = cls._movementsByDirection[direction](point)
                     yield point
 
-    def testOne(self):
+    def test(self):
         self.assertEqual(6, self.process(['R8,U5,L5,D3',
                                           'U7,R6,D4,L4']))
         self.assertEqual(159, self.process(['R75,D30,R83,U83,L12,D49,R71,U7,L72',

@@ -14,7 +14,7 @@ def join(items):
 
 
 class TestBase(unittest.TestCase):
-    """Base class for each day's task which is to be implemented by overriding process() and testOne()"""
+    """Base class for each day's task which is to be implemented by overriding process() and test()"""
 
     @classmethod
     def setUpClass(cls):
@@ -29,10 +29,10 @@ class TestBase(unittest.TestCase):
     def processAll(self, inputs: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError("must override processAll()")
 
-    def testOne(self):
-        raise NotImplementedError("must override testOne()")
+    def test(self):
+        raise NotImplementedError("must override test()")
 
-    def testAll(self):
+    def testGenerateOutput(self):
         with open(r'..\data\day{0}in.txt'.format(self._day), 'r') as file:
             inputs = [s.strip() for s in file.readlines()]
         outputs = self.processAll(inputs)

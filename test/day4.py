@@ -34,7 +34,7 @@ class Day4(TestBase):
 
         return twoAdjacentDigitsAreSame and digitsNeverDecrease
 
-    def testOne(self):
+    def test(self):
         self.assertFalse(self.isMatch(101234))
         self.assertTrue(self.isMatch(111111))
         self.assertTrue(self.isMatch(111112))
