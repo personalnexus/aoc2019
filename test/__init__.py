@@ -34,7 +34,7 @@ class TestBase(unittest.TestCase):
 
     def testAll(self):
         with open(r'..\data\day{0}in.txt'.format(self._day), 'r') as file:
-            inputs = file.readlines()
+            inputs = [s.strip() for s in file.readlines()]
         outputs = self.processAll(inputs)
         with open(r'..\data\day{0}out.txt'.format(self._day), 'w') as file:
             file.writelines(outputs)
