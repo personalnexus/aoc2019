@@ -1,4 +1,4 @@
-from test import split, AllLinesTestBase
+from test import split, AllLinesTestBase as TestBase
 from typing import Iterable, List
 
 
@@ -32,7 +32,7 @@ class Point:
         return self.distanceFromOrigin > other.distanceFromOrigin
 
 
-class Day3(AllLinesTestBase):
+class Day3(TestBase):
 
     _movementsByDirection = {'R': lambda p: Point(p.x + 1, p.y),
                              'L': lambda p: Point(p.x - 1, p.y),

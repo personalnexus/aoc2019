@@ -1,7 +1,7 @@
-from test import split, join, LineByLineTestBase
+from test import split, join, LineByLineTestBase as TestBase
 
 
-class Day2(LineByLineTestBase):
+class Day2(TestBase):
 
     def process(self, line):
         codes = split(line, int)
