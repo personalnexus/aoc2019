@@ -3,9 +3,9 @@ import intcode.instructions
 
 class IntCodeComputer(object):
 
-    def __init__(self, codes, initialIO=0):
+    def __init__(self, codes, io):
         self.codes = codes
-        self.IO = initialIO
+        self.io = io
 
     def execute(self):
         i = 0
@@ -22,5 +22,3 @@ class IntCodeComputer(object):
 
             if not instruction.execute():
                 break
-
-        return self.codes
