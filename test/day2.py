@@ -27,7 +27,7 @@ class Day2(TestBase):
 
     def test(self):
         self.coreTest(self.process)
-        self.coreTest(lambda line: processWithIntCodeComputer(line)[0])  # general solution from day 5 works, too
+        self.coreTest(lambda line: processWithIntCodeComputer(line, 0)[0])  # general solution from day 5 works, too
 
     def coreTest(self, process):
         self.assertEqual('2,0,0,0,99', process('1,0,0,0,99'))
