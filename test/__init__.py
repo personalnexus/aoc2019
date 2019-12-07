@@ -3,7 +3,7 @@ from abc import ABC
 from typing import List, Iterable
 
 
-def split(items, cast=str):
+def split(items, cast):
     result = [cast(x) for x in items.split(',')]
     return result
 
@@ -13,12 +13,19 @@ def join(items):
     return result
 
 
+def processWithIntCodeComputer(line: str, initialIO: int = 1):
+    from intcode import IntCodeComputer
+    intCode = IntCodeComputer(split(line, int), initialIO)
+    codes = intCode.execute()
+    return join(codes), intCode.IO
+
+
 class TestBase(unittest.TestCase):
     """Base class for each day's task which is to be implemented by overriding process() and test()"""
 
     @classmethod
     def setUpClass(cls):
-        if cls is LineByLineTestBase:
+        if cls is TestBase:
             raise unittest.SkipTest("Skip TestBase tests, it's a base class")
         super(TestBase, cls).setUpClass()
 
@@ -42,10 +49,6 @@ class TestBase(unittest.TestCase):
 
 class LineByLineTestBase(TestBase, ABC):
     """Base class for tasks processing one line at a time with one output per input line"""
-
-    def check(self, line, expectedOutput):
-        actualOutput = self.process(line)
-        self.assertEqual(expectedOutput, actualOutput)
 
     def processAll(self, inputs):
         outputs = (str(self.process(line)) + '\n' for line in inputs)

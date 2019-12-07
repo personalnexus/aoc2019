@@ -49,7 +49,7 @@ class Day3(TestBase):
     @classmethod
     def getPath(cls, line) -> Iterable[Point]:
         point = Point(0, 0)
-        steps = split(line)
+        steps = split(line, str)
         for step in steps:
             distance = int(step[1:])
             if distance != 0:

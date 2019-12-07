@@ -8,7 +8,7 @@ class Day1(TestBase):
         return result
 
     def test(self):
-        self.check(12, 2)
-        self.check(14, 2)
-        self.check(1969, 654)
-        self.check(100756, 33583)
+        self.assertEqual(2, self.process(12))
+        self.assertEqual(2, self.process(14))
+        self.assertEqual(654, self.process(1969))
+        self.assertEqual(33583, self.process(100756))

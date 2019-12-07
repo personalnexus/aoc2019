@@ -1,10 +1,11 @@
-from test import split, LineByLineTestBase as TestBase
+from test import processWithIntCodeComputer, LineByLineTestBase as TestBase
 
 
 class Day5(TestBase):
 
     def process(self, line: str):
-        pass
+        diagnosticCode = processWithIntCodeComputer(line, 1)[1]
+        return diagnosticCode
 
     def test(self):
-        pass
+        self.assertEqual('1002,4,3,4,99', processWithIntCodeComputer('1002,4,3,4,33')[0])
