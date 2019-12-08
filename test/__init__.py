@@ -13,11 +13,11 @@ def join(items):
     return result
 
 
-def processWithIntCodeComputer(line: str, io: int):
+def processWithIntCodeComputer(line: str, inputs):
     from intcode import IntCodeComputer
-    computer = IntCodeComputer(split(line, int), io)
+    computer = IntCodeComputer(split(line, int), inputs)
     computer.execute()
-    return join(computer.codes), computer.io
+    return join(computer.codes), computer.output
 
 
 class TestBase(unittest.TestCase):

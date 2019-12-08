@@ -6,10 +6,14 @@ import intcode.parameters
 
 class AbstractMachine(ABC):
 
-    def __init__(self, codes: List[int], io: int):
+    def __init__(self, codes: List[int], inputs):
         self.codes = codes
-        self.io = io
+        self.inputs = inputs if inputs is list else list(inputs)
         self.hasError = False
+        self.output = None
+
+    def popInput(self):
+        return self.inputs.pop(0)
 
 
 class Instruction(ABC):
@@ -61,7 +65,8 @@ class InputInstruction(Instruction):
         return 1
 
     def execute(self):
-        self._parameters[0].set(self.machine.io)
+        value = self.machine.popInput()
+        self._parameters[0].set(value)
         return True
 
 
@@ -73,7 +78,7 @@ class OutputInstruction(Instruction):
 
     def execute(self):
         value = self._parameters[0].get()
-        self.machine.io = value
+        self.machine.output = value
         if value != 0:
             if not self.machine.hasError:
                 # the first non-zero value is the diagnostic code
