@@ -19,8 +19,8 @@ class Day8(TestBase):
         minimumEndIndex = endIndex = lineLength
 
         # iterate in reverse because I read somewhere that comparing a number against zero is slightly faster than
-        # comparing it against a non-zero value
-        while endIndex > 0:
+        # comparing it against a non-zero value; even though this is a completely useless micro-optimization
+        while endIndex != 0:
             startIndex = endIndex - pixelsPerLayer
             layerCountOf0 = line.count('0', startIndex, endIndex)
             if layerCountOf0 < minimumCountOf0:
