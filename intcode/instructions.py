@@ -1,29 +1,17 @@
 from abc import ABC
-from typing import List
+from intcode.machine import MachineBase
 import intcode.parameters
-
-
-class AbstractMachine(ABC):
-
-    def __init__(self, codes: List[int], inputs):
-        self.codes = codes
-        self.inputs = inputs.copy() if isinstance(inputs, list) else [inputs]
-        self.hasError = False
-        self.output = None
-
-    def popInput(self):
-        return self.inputs.pop(0)
 
 
 class Instruction(ABC):
     """Base class for instruction that provides access to parameters"""
 
-    def __init__(self, parameterModes: str, index: int, machine: AbstractMachine):
+    def __init__(self, parameterModes: str, index: int, machine: MachineBase):
         self.index = index
         self.machine = machine
         parameterCount = self.getParameterCount()
         parameterModes = parameterModes.zfill(parameterCount)
-        self._parameters = [intcode.parameters.create(index + i, parameterModes[-i], machine.codes)
+        self._parameters = [intcode.parameters.create(index + i, int(parameterModes[-i]), machine)
                             for i in range(1, parameterCount + 1)]
 
     def getParameterCount(self):
@@ -91,7 +79,7 @@ class OutputInstruction(Instruction):
                 self.machine.hasError = True
             else:
                 # another non-zero value indicates an error
-                raise RuntimeError('An error occurred before instruction {0}. IO = {1}'.format(self.index, value))
+                raise RuntimeError('An error occurred before instruction {0}. Output = {1}'.format(self.index, value))
         return super().execute()
 
 
@@ -155,7 +143,7 @@ _instructionClassesByCode = {1: AddInstruction,
                              99: BreakInstruction}
 
 
-def create(instructionCode: int, parameterModes: str, index: int, machine: AbstractMachine) -> Instruction:
+def create(instructionCode: int, parameterModes: str, index: int, machine: MachineBase) -> Instruction:
     instructionClass = _instructionClassesByCode[instructionCode]
     result = instructionClass(parameterModes, index, machine)
     return result

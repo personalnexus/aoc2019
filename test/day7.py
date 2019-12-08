@@ -13,7 +13,7 @@ class Day7(TestBase):
     def getAmpOutput(self, line: str, phases: Iterable[int]):
         io = 0
         for phase in phases:
-            io = processWithIntCodeComputer(line, [phase, io])[1]
+            io = processWithIntCodeComputer(line, phase, io)[1]
         return io
 
     def test(self):

@@ -1,13 +1,13 @@
-from intcode.instructions import AbstractMachine
+from intcode.instructions import MachineBase
 
 
-class IntCodeComputer(AbstractMachine):
+class IntCodeComputer(MachineBase):
 
     def execute(self):
         nextInstruction = 0
-        while nextInstruction < len(self.codes):
+        while nextInstruction < len(self.program):
             # Code 0: header
-            instructionHeader = str(self.codes[nextInstruction]).zfill(2)
+            instructionHeader = str(self.program[nextInstruction]).zfill(2)
             instructionCode = int(instructionHeader[-2:])
             parameterModes = instructionHeader[0:-2]
 

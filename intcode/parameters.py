@@ -1,11 +1,11 @@
+from intcode.machine import MachineBase
 from abc import ABC
-from typing import List
 
 
 class Parameter(ABC):
 
-    def __init__(self, index: int, codes: List[int]):
-        self._codes = codes
+    def __init__(self, index: int, machine: MachineBase):
+        self._machine = machine
         self._index = index
 
     def get(self):
@@ -18,31 +18,30 @@ class Parameter(ABC):
 class PositionalParameter(Parameter):
 
     def get(self):
-        position = self._codes[self._index]
-        result = self._codes[position]
+        position = self._machine.program[self._index]
+        result = self._machine.program[position]
         return result
 
     def set(self, value: int):
-        position = self._codes[self._index]
-        self._codes[position] = value
+        position = self._machine.program[self._index]
+        self._machine.program[position] = value
 
 
 class ImmediateParameter(Parameter):
 
     def get(self):
-        result = self._codes[self._index]
+        result = self._machine.program[self._index]
         return result
 
     def set(self, value: int):
-        self._codes[self._index] = value
+        self._machine.program[self._index] = value
 
 
 _parameterClassesByMode = {0: PositionalParameter,
                            1: ImmediateParameter}
 
 
-def create(index: int, modeString: str, codes: List[int]) -> Parameter:
-    mode = int(modeString)
+def create(index: int, mode: int, machine: MachineBase) -> Parameter:
     parameterClass = _parameterClassesByMode[mode]
-    parameter = parameterClass(index, codes)
+    parameter = parameterClass(index, machine)
     return parameter
