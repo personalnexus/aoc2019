@@ -73,14 +73,7 @@ class OutputInstruction(Instruction):
     def execute(self):
         value = self._parameters[0].get()
         self.machine.output = value
-        if value != 0:
-            if not self.machine.hasError:
-                # the first non-zero value is the diagnostic code
-                self.machine.hasError = True
-            else:
-                # another non-zero value indicates an error
-                raise RuntimeError('An error occurred before instruction {0}. Output = {1}'.format(self.index, value))
-        return super().execute()
+        return None
 
 
 class JumpIfTrueInstruction(Instruction):
@@ -126,7 +119,7 @@ class RelativeBaseAdjustmentInstruction(Instruction):
         return 1
 
     def execute(self):
-        self.machine.relativeBase = self._parameters[0].get()
+        self.machine.relativeBase += self._parameters[0].get()
         return super().execute()
 
 

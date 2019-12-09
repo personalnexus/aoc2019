@@ -5,6 +5,7 @@ class IntCodeComputer(MachineBase):
 
     def execute(self):
         nextInstruction = 0
+        initialProgramLength = len(self.program)
         while nextInstruction < len(self.program):
             # Code 0: header
             instructionHeader = str(self.program[nextInstruction]).zfill(2)
@@ -17,3 +18,6 @@ class IntCodeComputer(MachineBase):
             nextInstruction = instruction.execute()
             if nextInstruction is None:
                 break
+
+        # trim the extra memory created during execution
+        self.program = self.program[:initialProgramLength]
