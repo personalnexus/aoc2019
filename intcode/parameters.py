@@ -14,31 +14,59 @@ class Parameter(ABC):
     def set(self, value: int):
         raise NotImplementedError()
 
+    def _get(self, index: int):
+        self._resize(index)
+        return self._machine.program[index]
+
+    def _set(self, index: int, value: int):
+        self._resize(index)
+        self._machine.program[index] = value
+
+    def _resize(self, index):
+        while index >= len(self._machine.program):
+            self._machine.program.append(0)
+
 
 class PositionalParameter(Parameter):
 
     def get(self):
-        position = self._machine.program[self._index]
-        result = self._machine.program[position]
+        position = self._get(self._getIndex())
+        result = self._get(position)
         return result
 
     def set(self, value: int):
-        position = self._machine.program[self._index]
-        self._machine.program[position] = value
+        position = self._get(self._getIndex())
+        self._set(position, value)
+
+    def _getIndex(self):
+        raise NotImplementedError('must implement _getIndex()')
+
+
+class AbsolutePositionalParameter(PositionalParameter):
+
+    def _getIndex(self):
+        return self._index
+
+
+class RelativePositionalParameter(PositionalParameter):
+
+    def _getIndex(self):
+        return self._index + self._machine.relativeBase
 
 
 class ImmediateParameter(Parameter):
 
     def get(self):
-        result = self._machine.program[self._index]
+        result = self._get(self._index)
         return result
 
     def set(self, value: int):
-        self._machine.program[self._index] = value
+        self._set(self._index, value)
 
 
-_parameterClassesByMode = {0: PositionalParameter,
-                           1: ImmediateParameter}
+_parameterClassesByMode = {0: AbsolutePositionalParameter,
+                           1: ImmediateParameter,
+                           2: RelativePositionalParameter}
 
 
 def create(index: int, mode: int, machine: MachineBase) -> Parameter:

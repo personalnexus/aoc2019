@@ -119,6 +119,17 @@ class EqualsInstruction(TwoInOneOutParameterInstruction):
         return 1 if parameter0 == parameter1 else 0
 
 
+class RelativeBaseAdjustmentInstruction(Instruction):
+    """Return 1 if parameter zero is equal to parameter one otherwise return 0"""
+
+    def getParameterCount(self):
+        return 1
+
+    def execute(self):
+        self.machine.relativeBase = self._parameters[0].get()
+        return super().execute()
+
+
 class BreakInstruction(Instruction):
     """
     Simply stops further execution when executed. We could probably special case this instead
@@ -140,6 +151,7 @@ _instructionClassesByCode = {1: AddInstruction,
                              6: JumpIfFalseInstruction,
                              7: LessThanInstruction,
                              8: EqualsInstruction,
+                             9: RelativeBaseAdjustmentInstruction,
                              99: BreakInstruction}
 
 
