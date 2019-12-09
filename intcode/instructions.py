@@ -20,6 +20,9 @@ class Instruction(ABC):
     def execute(self):
         return self.index + 1 + self.getParameterCount()
 
+    def getParameterValues(self):
+        return (str(p.get()) for p in self._parameters)
+
 
 class TwoInOneOutParameterInstruction(Instruction):
     """Base class for instructions setting a third parameter based on some calculation on two input parameters"""
@@ -65,22 +68,22 @@ class InputInstruction(Instruction):
 
 
 class OutputInstruction(Instruction):
-    """outputs the value of its only parameter if the computer is not in an error state"""
+    """outputs the value of its only parameter and stops execution"""
 
     def getParameterCount(self):
         return 1
 
     def execute(self):
         value = self._parameters[0].get()
-        self.machine.output = value
-        return None
+        self.machine.output.append(value)
+        return super().execute()
 
 
 class JumpIfTrueInstruction(Instruction):
     """Jump to the instruction given by the value of parameter 1 if parameter 0 is true"""
 
     def getParameterCount(self):
-        return 3
+        return 2
 
     def execute(self):
         result = self._parameters[1].get() if self._parameters[0].get() != 0 else super().execute()
@@ -91,7 +94,7 @@ class JumpIfFalseInstruction(Instruction):
     """Jump to the instruction given by the value of parameter 1 if parameter 0 is false"""
 
     def getParameterCount(self):
-        return 3
+        return 2
 
     def execute(self):
         result = self._parameters[1].get() if self._parameters[0].get() == 0 else super().execute()

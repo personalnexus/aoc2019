@@ -8,7 +8,7 @@ class MachineBase(ABC):
         self.program = program
         self.inputs = list(inputs)
         self.hasError = False
-        self.output = None
+        self.output = []
         self.relativeBase = 0
 
     def popInput(self):

@@ -17,7 +17,7 @@ def processWithIntCodeComputer(line: str, *inputs):
     from intcode import IntCodeComputer
     computer = IntCodeComputer(split(line, int), *inputs)
     computer.execute()
-    return join(computer.program), computer.output
+    return join(computer.program), computer.output[0] if len(computer.output) else computer.output
 
 
 class TestBase(unittest.TestCase):
