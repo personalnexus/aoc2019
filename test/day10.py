@@ -1,3 +1,4 @@
+import math
 from typing import List
 import itertools
 
@@ -51,14 +52,14 @@ class LineOfSight(object):
             result = True
         return result
 
-    def _isObstructedBy(self, c: Asteroid):
+    def _isObstructedBy(self, other: Asteroid):
         if self._slope is None:
-            isInLine = c.x == self.a.x
+            isInLine = other.x == self.a.x
         else:
-            isInLine = self._slope * c.x + self._intersect == c.y
+            isInLine = math.isclose(self._slope * other.x + self._intersect, other.y)
         result = (isInLine and
-                  self._minX <= c.x <= self._maxX and
-                  self._minY <= c.y <= self._maxY)
+                  self._minX <= other.x <= self._maxX and
+                  self._minY <= other.y <= self._maxY)
         return result
 
     def __repr__(self):
