@@ -4,7 +4,7 @@ from intcode.instructions import MachineBase
 
 class IntCodeComputer(MachineBase):
 
-    def __init__(self, program: List[int], *inputs):
+    def __init__(self, program: List[int], inputs: List[int]):
         super(IntCodeComputer, self).__init__(program, inputs)
         self.debug = False
 

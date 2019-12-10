@@ -13,11 +13,11 @@ def join(items):
     return result
 
 
-def processWithIntCodeComputer(line: str, *inputs):
+def processWithIntCodeComputer(line: str, inputs: List[int]):
     from intcode import IntCodeComputer
-    computer = IntCodeComputer(split(line, int), *inputs)
+    computer = IntCodeComputer(split(line, int), inputs)
     computer.execute()
-    return join(computer.program), computer.output[0] if len(computer.output) else computer.output
+    return join(computer.program), computer.output
 
 
 class TestBase(unittest.TestCase):
@@ -45,6 +45,12 @@ class TestBase(unittest.TestCase):
         outputs = self.processAll(inputs)
         with open(r'..\data\day{0}out.txt'.format(self._day), 'w') as file:
             file.writelines(outputs)
+
+    def checkIntCodeComputerOutput0(self, expectedOutput: int, line: str, inputs: List[int]):
+        self.assertEqual(expectedOutput, processWithIntCodeComputer(line, inputs)[1][0])
+
+    def checkIntCodeComputerProgram(self, expectedProgram: str, line: str, inputs: List[int]):
+        self.assertEqual(expectedProgram, processWithIntCodeComputer(line, inputs)[0])
 
 
 class LineByLineTestBase(TestBase, ABC):

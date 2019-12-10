@@ -1,5 +1,5 @@
 from test import processWithIntCodeComputer, LineByLineTestBase as TestBase
-from typing import Iterable
+from typing import Iterable, List
 from itertools import permutations
 
 
@@ -11,10 +11,12 @@ class Day7(TestBase):
         return maxOutput
 
     def getAmpOutput(self, line: str, phases: Iterable[int]):
-        io = 0
+        io = [0]
         for phase in phases:
-            io = processWithIntCodeComputer(line, phase, io)[1]
-        return io
+            inputs = [phase]
+            inputs.extend(io)
+            io = processWithIntCodeComputer(line, inputs)[1]
+        return io.pop(0)
 
     def test(self):
         self.assertEqual(43210, self.getAmpOutput('3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0', [4, 3, 2, 1, 0]))
