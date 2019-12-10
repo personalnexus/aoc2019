@@ -44,14 +44,14 @@ class LineOfSight(object):
 
     def isClear(self, allAsteroids: List[Asteroid]):
         for asteroid in allAsteroids:
-            if asteroid != self.a and asteroid != self.b and self.isObstructedBy(asteroid):
+            if asteroid != self.a and asteroid != self.b and self._isObstructedBy(asteroid):
                 result = False
                 break
         else:
             result = True
         return result
 
-    def isObstructedBy(self, c: Asteroid):
+    def _isObstructedBy(self, c: Asteroid):
         if self._slope is None:
             isInLine = c.x == self.a.x
         else:
@@ -82,13 +82,14 @@ class Day10(TestBase):
     def process(self, lines: List[str]):
         allAsteroids = parseAsteroidMap(lines)
 
-        for los in (LineOfSight(a, b) for (a, b) in itertools.combinations(allAsteroids, 2)):
+        for (asteroidA, asteroidB) in itertools.combinations(allAsteroids, 2):
+            los = LineOfSight(asteroidA, asteroidB)
             if los.isClear(allAsteroids):
-                los.a.clearLinesOfSight.append(los)
-                los.b.clearLinesOfSight.append(los)
+                asteroidA.clearLinesOfSight.append(los)
+                asteroidB.clearLinesOfSight.append(los)
 
-        bestMonitoringStation = max(allAsteroids, key=lambda a: a.clearLinesOfSightCount)
-        return bestMonitoringStation.clearLinesOfSightCount
+        bestMonitoringStations = sorted(allAsteroids, key=lambda x: x.clearLinesOfSightCount, reverse=True)
+        return bestMonitoringStations[0].clearLinesOfSightCount
 
     def test(self):
         self.assertEqual(8, self.process(['.#..#',
