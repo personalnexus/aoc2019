@@ -4,6 +4,12 @@ from collections import defaultdict
 from typing import List
 
 
+class Color:
+    """Just a namespace for colors that results in a syntax similar to C# enums"""
+    black = 0
+    white = 1
+
+
 class Direction:
     """
     Adapted from day 3, the Direction class provides a namespace for named direction constants and related functionality
@@ -24,36 +30,38 @@ class Direction:
 
     def move(self, x: int, y: int, turn: int):
         self.direction += 1 if turn == 1 else -1
-        # after a full move, we're facing up again
-        if not Direction.up <= self.direction <= Direction.left:
-            self.direction = Direction.up
+        # after a full turn, we're facing up again.
+        self.direction = (self.direction + 4) % 4
         return Direction._movementsByDirection[self.direction](x, y)
 
 
 class HullPaintingRobot(object):
 
-    def __init__(self, program: List[int]):
+    def __init__(self, program: List[int], defaultPanelColor=Color.black):
         self.computer = IntCodeComputer(program)
-
-    def paint(self):
+        self.direction = Direction()
+        self.panelColorByXy = defaultdict(lambda: defaultPanelColor)
         (x, y) = (0, 0)
-        direction = Direction()
-        panelColorByXy = defaultdict(int)  # black = 0 (conveniently default(int) == default panel color), white = 1
+        # don't access dict for the initial panel color, as it would create an entry for a panel that was not colored
+        oldPanelColor = defaultPanelColor
         while not self.computer.halted:
-            oldPanelColor = panelColorByXy[(x, y)]
             newPanelColor = self.computer.execute([oldPanelColor])
-            panelColorByXy[(x, y)] = newPanelColor
+            oldPanelColor = self.panelColorByXy[(x, y)]
+            self.panelColorByXy[(x, y)] = newPanelColor
             turn = self.computer.execute([])
-            x, y = direction.move(x, y, turn)
-        return panelColorByXy
+            x, y = self.direction.move(x, y, turn)
 
 
 class Day11(TestBase):
 
     def process(self, line: str):
-        robot = HullPaintingRobot(split(line, int))
-        paintedPanels = robot.paint()
+        paintedPanels = HullPaintingRobot(split(line, int)).panelColorByXy
         return len(paintedPanels)
 
     def test(self):
-        pass
+        self.assertEqual(0, len(HullPaintingRobot([99]).panelColorByXy))
+        # Paint white, turn left
+        paintBot1 = HullPaintingRobot([104, 1, 104, -1, 99])
+        self.assertEqual(1, len(paintBot1.panelColorByXy))
+        self.assertEqual(((0, 0), Color.white), paintBot1.panelColorByXy.popitem())
+        self.assertEqual(Direction.left, paintBot1.direction.direction)
