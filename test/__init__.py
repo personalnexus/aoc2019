@@ -1,6 +1,7 @@
 import unittest
 from abc import ABC
 from typing import List, Iterable
+from collections import defaultdict
 
 
 def split(items, cast):
@@ -15,9 +16,12 @@ def join(items):
 
 def processWithIntCodeComputer(line: str, inputs: List[int]):
     from intcode import IntCodeComputer
-    computer = IntCodeComputer(split(line, int))
-    computer.execute(inputs)
-    return join(computer.program), computer.outputs
+    originalProgram = split(line, int)
+    initialProgramLength = len(originalProgram)
+    computer = IntCodeComputer(originalProgram)
+    outputs = computer.executeAll(inputs)
+    program = (value for (key, value) in computer.program.items() if key < initialProgramLength)
+    return join(program), outputs
 
 
 class TestBase(unittest.TestCase):

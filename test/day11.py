@@ -39,13 +39,12 @@ class HullPaintingRobot(object):
         (x, y) = (0, 0)
         direction = Direction()
         panelColorByXy = defaultdict(int)  # black = 0 (conveniently default(int) == default panel color), white = 1
-        while True:
-            panelColor = panelColorByXy[(x, y)]
-            self.computer.execute([panelColor])
-            if len(self.computer.outputs) != 2:
-                break
-            panelColorByXy[(x, y)] = self.computer.outputs[0]
-            x, y = direction.move(x, y, self.computer.outputs[1])
+        while not self.computer.halted:
+            oldPanelColor = panelColorByXy[(x, y)]
+            newPanelColor = self.computer.execute([oldPanelColor])
+            panelColorByXy[(x, y)] = newPanelColor
+            turn = self.computer.execute([])
+            x, y = direction.move(x, y, turn)
         return panelColorByXy
 
 

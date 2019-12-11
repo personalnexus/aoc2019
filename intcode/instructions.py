@@ -75,7 +75,7 @@ class OutputInstruction(Instruction):
 
     def execute(self):
         value = self._parameters[0].get()
-        self.machine.outputs.append(value)
+        self.machine.setOutput(value)
         return super().execute()
 
 
@@ -126,7 +126,7 @@ class RelativeBaseAdjustmentInstruction(Instruction):
         return super().execute()
 
 
-class BreakInstruction(Instruction):
+class HaltInstruction(Instruction):
     """
     Simply stops further execution when executed. We could probably special case this instead
     of creating a new instruction instance.
@@ -136,6 +136,7 @@ class BreakInstruction(Instruction):
         return 0
 
     def execute(self):
+        self.machine.halted = True
         return None
 
 
@@ -148,7 +149,7 @@ _instructionClassesByCode = {1: AddInstruction,
                              7: LessThanInstruction,
                              8: EqualsInstruction,
                              9: RelativeBaseAdjustmentInstruction,
-                             99: BreakInstruction}
+                             99: HaltInstruction}
 
 
 def create(instructionCode: int, parameterModes: str, index: int, machine: MachineBase) -> Instruction:
