@@ -15,9 +15,9 @@ def join(items):
 
 def processWithIntCodeComputer(line: str, inputs: List[int]):
     from intcode import IntCodeComputer
-    computer = IntCodeComputer(split(line, int), inputs)
-    computer.execute()
-    return join(computer.program), computer.output
+    computer = IntCodeComputer(split(line, int))
+    computer.execute(inputs)
+    return join(computer.program), computer.outputs
 
 
 class TestBase(unittest.TestCase):

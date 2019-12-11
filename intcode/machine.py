@@ -4,11 +4,10 @@ from typing import List
 
 class MachineBase(ABC):
 
-    def __init__(self, program: List[int], inputs: List[int]):
+    def __init__(self, program: List[int]):
         self.program = program
-        self.inputs = inputs[:]
-        self.hasError = False
-        self.output = []
+        self.inputs: List[int] = []
+        self.outputs: List[int] = []
         self.relativeBase = 0
 
     def popInput(self):

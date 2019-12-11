@@ -1,5 +1,4 @@
 from test import split, join, LineByLineTestBase as TestBase, processWithIntCodeComputer
-from intcode import IntCodeComputer
 
 
 class Day2(TestBase):

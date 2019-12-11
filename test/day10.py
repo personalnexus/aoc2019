@@ -1,8 +1,7 @@
-import math
-from typing import List
-import itertools
-
 from test import AllLinesTestBase as TestBase
+from math import isclose
+from typing import List
+from itertools import combinations
 
 
 class Asteroid(object):
@@ -25,22 +24,26 @@ class Asteroid(object):
 
 
 class LineOfSight(object):
+    """
+    Represents the line between two asteroids. Had I remembered more about trig functions, I might have gone with the
+    tangent instead.
+    """
 
     def __init__(self, a: Asteroid, b: Asteroid):
         self.a = a
         self.b = b
 
-        self._minX = min(self.a.x, self.b.x)
-        self._maxX = max(self.a.x, self.b.x)
-        self._minY = min(self.a.y, self.b.y)
-        self._maxY = max(self.a.y, self.b.y)
+        self._minX = min(a.x, b.x)
+        self._maxX = max(a.x, b.x)
+        self._minY = min(a.y, b.y)
+        self._maxY = max(a.y, b.y)
 
         if a.x == b.x:
             # vertical line cannot be expressed as a linear function
             self._slope = None
             self._intersect = None
         else:
-            self._slope = float(a.y - b.y) / float(a.x - b.x)
+            self._slope = (a.y - b.y) / (a.x - b.x)
             self._intersect = a.y - (self._slope * a.x)
 
     def isClear(self, allAsteroids: List[Asteroid]):
@@ -56,7 +59,7 @@ class LineOfSight(object):
         if self._slope is None:
             isInLine = other.x == self.a.x
         else:
-            isInLine = math.isclose(self._slope * other.x + self._intersect, other.y)
+            isInLine = isclose(self._slope * other.x + self._intersect, other.y)
         result = (isInLine and
                   self._minX <= other.x <= self._maxX and
                   self._minY <= other.y <= self._maxY)
@@ -83,7 +86,7 @@ class Day10(TestBase):
     def process(self, lines: List[str]):
         allAsteroids = parseAsteroidMap(lines)
 
-        for (asteroidA, asteroidB) in itertools.combinations(allAsteroids, 2):
+        for (asteroidA, asteroidB) in combinations(allAsteroids, 2):
             los = LineOfSight(asteroidA, asteroidB)
             if los.isClear(allAsteroids):
                 asteroidA.clearLinesOfSight.append(los)

@@ -75,7 +75,7 @@ class OutputInstruction(Instruction):
 
     def execute(self):
         value = self._parameters[0].get()
-        self.machine.output.append(value)
+        self.machine.outputs.append(value)
         return super().execute()
 
 
