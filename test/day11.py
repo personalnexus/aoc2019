@@ -32,7 +32,8 @@ class Direction:
         self.direction += 1 if turn == 1 else -1
         # after a full turn, we're facing up again.
         self.direction = (self.direction + 4) % 4
-        return Direction._movementsByDirection[self.direction](x, y)
+        x, y = Direction._movementsByDirection[self.direction](x, y)
+        return x, y
 
 
 class HullPaintingRobot(object):
@@ -41,15 +42,17 @@ class HullPaintingRobot(object):
         self.computer = IntCodeComputer(program)
         self.direction = Direction()
         self.panelColorByXy = defaultdict(lambda: defaultPanelColor)
-        (x, y) = (0, 0)
+        (self.x, self.y) = (0, 0)
         # don't access dict for the initial panel color, as it would create an entry for a panel that was not colored
         oldPanelColor = defaultPanelColor
-        while not self.computer.halted:
+        while True:
             newPanelColor = self.computer.execute([oldPanelColor])
-            oldPanelColor = self.panelColorByXy[(x, y)]
-            self.panelColorByXy[(x, y)] = newPanelColor
+            if self.computer.halted:
+                break
+            oldPanelColor = self.panelColorByXy[(self.x, self.y)]
+            self.panelColorByXy[(self.x, self.y)] = newPanelColor
             turn = self.computer.execute([])
-            x, y = self.direction.move(x, y, turn)
+            self.x, self.y = self.direction.move(self.x, self.y, turn)
 
 
 class Day11(TestBase):
@@ -61,7 +64,9 @@ class Day11(TestBase):
     def test(self):
         self.assertEqual(0, len(HullPaintingRobot([99]).panelColorByXy))
         # Paint white, turn left
-        paintBot1 = HullPaintingRobot([104, 1, 104, -1, 99])
+        paintBot1 = HullPaintingRobot([104, 1, 104, 0, 99])
         self.assertEqual(1, len(paintBot1.panelColorByXy))
         self.assertEqual(((0, 0), Color.white), paintBot1.panelColorByXy.popitem())
         self.assertEqual(Direction.left, paintBot1.direction.direction)
+        self.assertEqual(-1, paintBot1.x)
+        self.assertEqual(0, paintBot1.y)
