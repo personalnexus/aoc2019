@@ -33,6 +33,8 @@ class IntCodeComputer(MachineBase):
         allOutputs = []
         while not self.halted:
             output = self.execute(inputs)
+            if self.halted:
+                break
             allOutputs.append(output)
             inputs = []
         return allOutputs
