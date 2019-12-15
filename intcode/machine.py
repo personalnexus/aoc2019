@@ -11,6 +11,9 @@ class MachineBase(ABC):
         self._output: Optional[int] = None
         self.relativeBase = 0
         self.halted = False
+        self.nextInstructionIndex = 0
+        self.nextInstructionCode = 0
+        self.nextParameterModes = ''
 
     def popInput(self):
         return self._inputs.pop(0)

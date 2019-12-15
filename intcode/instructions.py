@@ -126,20 +126,6 @@ class RelativeBaseAdjustmentInstruction(Instruction):
         return super().execute()
 
 
-class HaltInstruction(Instruction):
-    """
-    Simply stops further execution when executed. We could probably special case this instead
-    of creating a new instruction instance.
-    """
-
-    def getParameterCount(self):
-        return 0
-
-    def execute(self):
-        self.machine.halted = True
-        return None
-
-
 _instructionClassesByCode = {1: AddInstruction,
                              2: MultiplyInstruction,
                              3: InputInstruction,
@@ -148,11 +134,10 @@ _instructionClassesByCode = {1: AddInstruction,
                              6: JumpIfFalseInstruction,
                              7: LessThanInstruction,
                              8: EqualsInstruction,
-                             9: RelativeBaseAdjustmentInstruction,
-                             99: HaltInstruction}
+                             9: RelativeBaseAdjustmentInstruction}
 
 
-def create(instructionCode: int, parameterModes: str, index: int, machine: MachineBase) -> Instruction:
-    instructionClass = _instructionClassesByCode[instructionCode]
-    result = instructionClass(parameterModes, index, machine)
+def create(machine: MachineBase) -> Instruction:
+    instructionClass = _instructionClassesByCode[machine.nextInstructionCode]
+    result = instructionClass(machine.nextParameterModes, machine.nextInstructionIndex, machine)
     return result

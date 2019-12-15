@@ -45,10 +45,8 @@ class HullPaintingRobot(object):
         (self.x, self.y) = (0, 0)
         # don't access dict for the initial panel color, as it would create an entry for a panel that was not colored
         oldPanelColor = defaultPanelColor
-        while True:
+        while not self.computer.halted:
             newPanelColor = self.computer.execute([oldPanelColor])
-            if self.computer.halted:
-                break
             oldPanelColor = self.panelColorByXy[(self.x, self.y)]
             self.panelColorByXy[(self.x, self.y)] = newPanelColor
             turn = self.computer.execute([])

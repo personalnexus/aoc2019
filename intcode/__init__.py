@@ -7,34 +7,38 @@ class IntCodeComputer(MachineBase):
     def __init__(self, program: List[int]):
         super(IntCodeComputer, self).__init__(program)
         self.debug = False
-        self._nextInstruction = 0
-
-    def execute(self, inputs: List[int]):
-        self._inputs.extend(inputs)
-        while not self.halted:
-            # Code 0: header
-            instructionHeader = str(self.program[self._nextInstruction]).zfill(2)
-            instructionCode = int(instructionHeader[-2:])
-            parameterModes = instructionHeader[0:-2]
-
-            # Codes 1-n: instruction parameters
-            instruction = instructions.create(instructionCode, parameterModes, self._nextInstruction, self)
-
-            if self.debug:
-                instructionName = instruction.__class__.__name__.replace('Instruction', '')
-                parameters = ','.join(instruction.getParameterValues())
-                print(f'{self._nextInstruction} | {instructionName} | {parameters}')
-
-            self._nextInstruction = instruction.execute()
-            if self._output is not None:
-                return self._output
+        # This will set the halted flag when the program consists of only a halt instruction
+        self._getNextInstructionDetails()
 
     def executeAll(self, inputs: List[int]):
         allOutputs = []
         while not self.halted:
             output = self.execute(inputs)
-            if self.halted:
-                break
             allOutputs.append(output)
             inputs = []
         return allOutputs
+
+    def execute(self, inputs: List[int]):
+        self._inputs.extend(inputs)
+        while not self.halted:
+            instruction = instructions.create(self)
+
+            if self.debug:
+                instructionName = instruction.__class__.__name__.replace('Instruction', '')
+                parameters = ','.join(instruction.getParameterValues())
+                print(f'{self.nextInstructionIndex}\t{instructionName}\t{parameters}')
+
+            self.nextInstructionIndex = instruction.execute()
+            self._getNextInstructionDetails()
+
+            if self._output is not None:
+                output = self._output
+                self._output = None
+                return output
+
+    def _getNextInstructionDetails(self):
+        instructionHeader = str(self.program[self.nextInstructionIndex]).zfill(2)
+        self.nextInstructionCode = int(instructionHeader[-2:])
+        self.nextParameterModes = instructionHeader[0:-2]
+        if self.nextInstructionCode in (0, 99):
+            self.halted = True
