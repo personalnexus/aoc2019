@@ -1,5 +1,4 @@
 from test import processWithIntCodeComputer, LineByLineTestBase as TestBase
-from typing import List
 
 
 class DayX(TestBase):
