@@ -1,7 +1,6 @@
 import unittest
 from abc import ABC
 from typing import List, Iterable
-from collections import defaultdict
 
 
 def split(items, cast):

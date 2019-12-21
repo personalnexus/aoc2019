@@ -2,6 +2,20 @@ from typing import List
 from intcode.instructions import MachineBase
 
 
+def springScriptToIntCodeInputs(assemblyInstructions: List[str]):
+    """
+        Converts the ASCII assembly instructions of SpringScript to integer inputs for an IntCodeComputer. Automatically
+        includes new-lines and the final WALK instruction.
+    """
+    if len(assemblyInstructions) > 15:
+        raise ValueError("SpringScript is limited to 15 assembly instructions")
+    inputs: List[int] = []
+    for instruction in assemblyInstructions:
+        inputs.extend(map(ord, instruction + '\n'))
+    inputs.extend(map(ord, "WALK\n"))
+    return inputs
+
+
 class IntCodeComputer(MachineBase):
 
     def __init__(self, program: List[int]):
