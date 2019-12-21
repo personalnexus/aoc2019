@@ -9,8 +9,7 @@ def springScriptToIntCodeInputs(assemblyInstructions: List[str]):
     """
     if len(assemblyInstructions) > 15:
         raise ValueError("SpringScript is limited to 15 assembly instructions")
-    inputs = [ord(c) for c in '\n'.join(assemblyInstructions)]
-    inputs.extend(map(ord, "\nWALK\n"))
+    inputs = [ord(character) for character in ('\n'.join(assemblyInstructions) + "\nWALK\n")]
     return inputs
 
 
