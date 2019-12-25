@@ -14,9 +14,10 @@ class MachineBase(ABC):
         self.nextInstructionIndex = 0
         self.nextInstructionCode = 0
         self.nextParameterModes = ''
+        self.inputsProvider = None
 
     def popInput(self):
-        return self._inputs.pop(0)
+        return self.inputsProvider() if self.inputsProvider is not None else self._inputs.pop(0)
 
     def setOutput(self, output: int):
         self._output = output

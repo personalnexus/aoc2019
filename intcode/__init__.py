@@ -29,8 +29,9 @@ class IntCodeComputer(MachineBase):
             inputs = []
         return allOutputs
 
-    def execute(self, inputs: List[int]):
-        self._inputs.extend(inputs)
+    def execute(self, inputs=None):
+        if inputs is not None:
+            self._inputs.extend(inputs)
         while not self.halted:
             instruction = instructions.create(self)
 
